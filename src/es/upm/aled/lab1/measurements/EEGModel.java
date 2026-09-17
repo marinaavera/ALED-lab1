@@ -57,7 +57,11 @@ public class EEGModel {
 	 */
 	public EEGModel(Measurement[] measurements) {
 		// TODO
-		
+		List<Measurement> m=new ArrayList<>();
+		for(int i=0; i<measurements.length; i++) {
+			m.add(measurements[i]);
+		}
+		this.measurements=m;
 	}
 
 	/**
@@ -130,8 +134,29 @@ public class EEGModel {
 	 * @throws IOException Thrown if the file can't be written.
 	 */
 	public void saveFile(String fileName) throws IOException {
-		// TODO
-		
+		//TODO
+		File f = new File(fileName);
+		FileOutputStream fos = new FileOutputStream(f);
+		PrintStream pos = new PrintStream(fos);
+		int sample = 0;
+			for(Measurement m : measurements) {
+				pos.print(sample);
+				for(int i=0;i < m.numChannels();i++) {
+					pos.print(",");
+					pos.print(m.getChannel(i));
+
+			}
+			pos.println();
+			sample++;
+			
+			if (sample > 255){
+				sample = 0;
+			}
+		}
+			if(pos.checkError()) {
+				pos.close();
+				throw new IOException("Error al escribir el archivo");
+			}
 	}
 
 	/**
@@ -255,6 +280,11 @@ public class EEGModel {
 			EEGModel eeg = new EEGModel();
 			eeg.createSyntheticData(1000);
 			// TODO
+			try {
+				eeg.saveFile("Synthetic.txt");
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 			
 		}
 	}
