@@ -56,7 +56,6 @@ public class EEGModel {
 	 * @param measurements The Measurements that make up the EEGModel.
 	 */
 	public EEGModel(Measurement[] measurements) {
-		// TODO
 		List<Measurement> m=new ArrayList<>();
 		for(int i=0; i<measurements.length; i++) {
 			m.add(measurements[i]);
@@ -93,9 +92,7 @@ public class EEGModel {
 	 * @return The new EEGModel.
 	 */
 	public EEGModel filter(Filter filter) {
-		// TODO
-		
-		return null;
+		return filter.applyFilter(this);
 	}
 
 	/**
@@ -134,24 +131,17 @@ public class EEGModel {
 	 * @throws IOException Thrown if the file can't be written.
 	 */
 	public void saveFile(String fileName) throws IOException {
-		//TODO
 		File f = new File(fileName);
 		FileOutputStream fos = new FileOutputStream(f);
 		PrintStream pos = new PrintStream(fos);
-		int sample = 0;
+		int index = 0;
 			for(Measurement m : measurements) {
-				pos.print(sample);
+				pos.print((index++)%256);
 				for(int i=0;i < m.numChannels();i++) {
-					pos.print(",");
-					pos.print(m.getChannel(i));
-
+					pos.print("," + m.getChannel(i));
+					pos.println();
 			}
-			pos.println();
-			sample++;
-			
-			if (sample > 255){
-				sample = 0;
-			}
+			pos.close();
 		}
 			if(pos.checkError()) {
 				pos.close();
@@ -274,12 +264,10 @@ public class EEGModel {
 		if (args.length > 0) {
 			EEGModel eeg = new EEGModel(args[0]);
 			eeg.plotData();
-			// TODO
 			
 		} else {
 			EEGModel eeg = new EEGModel();
 			eeg.createSyntheticData(1000);
-			// TODO
 			try {
 				eeg.saveFile("Synthetic.txt");
 			} catch(IOException e) {
@@ -288,4 +276,5 @@ public class EEGModel {
 			
 		}
 	}
+	
 }
